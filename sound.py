@@ -5,7 +5,7 @@ class Sound():
         # Music
         pygame.mixer.music.load("data/sounds/MusicTest.mp3")
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.set_volume(0.08)
 
         # Sounds
 
@@ -19,7 +19,7 @@ class Sound():
 
         # Som de aprimoramento
         self.up = pygame.mixer.Sound("data/sounds/up.mp3")
-        self.up.set_volume(0.1)
+        self.up.set_volume(0.4)
 
     def play(self,name):
         if ( name == 'fah'):
