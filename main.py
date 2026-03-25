@@ -72,18 +72,32 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     sounds.play('shot')
-                    newShot = Shot("data/images/Shot.png", objectGroup, shotGroup)
-                    newShot.rect.center = player.rect.center
+                    offset = 30  # distância entre os tiros
+
+                    # garante limite de 1 a 5
+                    numberShots = max(1, min(numberShots, 5))
+
+                    # calcula ponto central
+                    center_x = player.rect.centerx
+                    center_y = player.rect.centery
+
+                    for i in range(numberShots):
+                        shot = Shot("data/images/Shot.png", objectGroup, shotGroup)
+
+                        # espalha os tiros simetricamente
+                        dx = (i - (numberShots - 1) / 2) * offset
+
+                        shot.rect.center = (center_x + dx, center_y)
 
         objectGroup.update()
 
         timer += 1
         if timer > 30:
             timer = 0
-            if random.random() < 0.3:
+            if random.random() < 0.25:
                 newEnemy = Enemy("data/images/Asteroid.png", objectGroup, enemyGroup)
 
-            if random.random() < 0.1:
+            if random.random() < 0.05:
                 if random.random() < 0.5:
                     newImprovement = Improvement("data/images/moreShot.png", 'shot', objectGroup, improvementGroup)
                 else:
