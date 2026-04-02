@@ -1,5 +1,15 @@
-import time
+import os
+import sys
 
+dirpath = os.getcwd()
+sys.path.append(dirpath)
+
+if getattr(sys, "frozen", False):
+    os.chdir(sys._MEIPASS)
+
+####
+
+import time
 import pygame
 import random
 import sound
@@ -27,7 +37,7 @@ textRect = pygame.Rect(51,15,50,50)
 pygame.init()
 display = pygame.display.set_mode([800, 600])
 pygame.display.set_caption("ShotSpace")
-icon = pygame.image.load("data/images/Rocket.png")
+icon = pygame.image.load("data/images/gameIcon.png")
 pygame.display.set_icon(icon)
 
 # Groups
@@ -103,7 +113,7 @@ if __name__ == '__main__':
                 else:
                     newImprovement = Improvement("data/images/moreLife.png", 'life', objectGroup, improvementGroup)
 
-        enemyCollisions = pygame.sprite.spritecollide(player, enemyGroup, True)
+        enemyCollisions = pygame.sprite.spritecollide(player, enemyGroup, True, pygame.sprite.collide_mask)
 
         if enemyCollisions:
             if remainingLifes == 1:
@@ -125,7 +135,7 @@ if __name__ == '__main__':
                 numberShots += 1
                 sounds.play('up')
 
-        hits = pygame.sprite.groupcollide(shotGroup, enemyGroup, True, True)
+        hits = pygame.sprite.groupcollide(shotGroup, enemyGroup, True, True, pygame.sprite.collide_mask)
 
 
         pygame.display.update()
