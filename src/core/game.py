@@ -1,4 +1,3 @@
-# src/core/game.py
 import pygame
 import random
 import time
@@ -12,7 +11,7 @@ from src.entities.enemy import Enemy
 from src.entities.shot import Shot
 from src.entities.improvement import Improvement
 from src.managers.sound_manager import Sound
-from src.components.textSprite import TextSprite  # ajuste o caminho se necessário
+from src.components.textSprite import TextSprite
 
 
 class Game:
@@ -34,8 +33,8 @@ class Game:
         self.remainingLifes = 1
         self.numberShots = 1
         self.timer = 0
-        self.ultimo_tiro = 0
-        self.cooldown = 700  # 0,7 segundos em ms
+        self.last_shot = 0
+        self.cooldown_shot = 700  # 0,7 segundos em ms
 
         # ====================== BACKGROUND ======================
         self.bg = pygame.sprite.Sprite(self.objectGroup)
@@ -81,17 +80,26 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
 
+    # Spawn de aprimoramentosd
+    def spawnImprovement(self, probability, enemyRect):
+        if random.random() < probability:
+            if random.random() < 0.5:
+                newImprovement = Improvement("assets/images/moreShot.png", 'shot', enemyRect,self.objectGroup, self.improvementGroup)
+            else:
+                newImprovement = Improvement("assets/images/moreLife.png", 'life', enemyRect,self.objectGroup, self.improvementGroup)
+
     def update(self):
         """Atualiza toda a lógica do jogo"""
         keys = pygame.key.get_pressed()
+
 
         # ==================== TIRO DO JOGADOR ====================
         if keys[pygame.K_SPACE]:
             agora = pygame.time.get_ticks()
 
-            # verifica se já passou o tempo de cooldown
-            if agora - self.ultimo_tiro >= self.cooldown:
-                self.ultimo_tiro = agora  # atualiza o tempo do último tiro
+            # verifica se já passou o tempo de cooldown do tiro
+            if agora - self.last_shot >= self.cooldown_shot:
+                self.last_shot = agora  # atualiza o tempo do último tiro
 
                 self.sounds.play('shot')
 
@@ -116,14 +124,7 @@ class Game:
             if random.random() < 0.25:  # 25% de chance a cada 30 frames
                 Enemy("assets/images/Asteroid.png", self.objectGroup, self.enemyGroup)
 
-            # Spawn de aprimoramentos
-            if random.random() < 0.003:
-                if random.random() < 0.5:
-                    newImprovement = Improvement("assets/images/moreShot.png", 'shot',
-                                                 self.objectGroup, self.improvementGroup)
-                else:
-                    newImprovement = Improvement("assets/images/moreLife.png", 'life',
-                                                 self.objectGroup, self.improvementGroup)
+            self.spawnImprovement(0.005, None)
 
         # ==================== ATUALIZA TODOS OS SPRITES ====================
         self.objectGroup.update()
@@ -155,8 +156,10 @@ class Game:
                 self.sounds.play('up')
 
         # Colisão Tiro × Inimigo
-        pygame.sprite.groupcollide(self.shotGroup, self.enemyGroup, True, True,
-                                   pygame.sprite.collide_mask)
+        shotCollisions = pygame.sprite.groupcollide(self.shotGroup, self.enemyGroup, True, True,pygame.sprite.collide_mask)
+        for col in shotCollisions:
+            enemyRect = col.rect
+            self.spawnImprovement(0.01, enemyRect)
 
     def draw(self):
         """Desenha tudo na tela"""
