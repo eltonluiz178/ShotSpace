@@ -34,6 +34,8 @@ class Game:
         self.remainingLifes = 1
         self.numberShots = 1
         self.timer = 0
+        self.ultimo_tiro = 0
+        self.cooldown = 700  # 0,7 segundos em ms
 
         # ====================== BACKGROUND ======================
         self.bg = pygame.sprite.Sprite(self.objectGroup)
@@ -85,19 +87,25 @@ class Game:
 
         # ==================== TIRO DO JOGADOR ====================
         if keys[pygame.K_SPACE]:
-            self.sounds.play('shot')
+            agora = pygame.time.get_ticks()
 
-            offset = 30
-            center_x = self.player.rect.centerx
-            center_y = self.player.rect.centery
+            # verifica se já passou o tempo de cooldown
+            if agora - self.ultimo_tiro >= self.cooldown:
+                self.ultimo_tiro = agora  # atualiza o tempo do último tiro
 
-            # Limita entre 1 e 5 tiros
-            self.numberShots = max(1, min(self.numberShots, 5))
+                self.sounds.play('shot')
 
-            for i in range(self.numberShots):
-                shot = Shot("assets/images/Shot.png", self.objectGroup, self.shotGroup)
-                dx = (i - (self.numberShots - 1) / 2) * offset
-                shot.rect.center = (center_x + dx, center_y)
+                offset = 30
+                center_x = self.player.rect.centerx
+                center_y = self.player.rect.centery
+
+                # Limita entre 1 e 5 tiros
+                self.numberShots = max(1, min(self.numberShots, 5))
+
+                for i in range(self.numberShots):
+                    shot = Shot("assets/images/Shot.png", self.objectGroup, self.shotGroup)
+                    dx = (i - (self.numberShots - 1) / 2) * offset
+                    shot.rect.center = (center_x + dx, center_y)
 
         # ==================== SPAWN DE INIMIGOS ====================
         self.timer += 1
