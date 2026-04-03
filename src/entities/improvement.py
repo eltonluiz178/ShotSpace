@@ -1,9 +1,12 @@
 import pygame
 import random
+from ..core.settings import Settings
 
 class Improvement(pygame.sprite.Sprite):
     def __init__(self, imagePath, tipo,*groups):
         super().__init__(*groups)
+
+        self.settings = Settings()
 
         # Carregando imagem de forma dinâmica
         self.image = pygame.image.load(imagePath)
@@ -14,7 +17,7 @@ class Improvement(pygame.sprite.Sprite):
 
         # Surgimento aleatório no mapa
         self.rect.y = random.randint(-400,-1)
-        self.rect.x = random.randint(1,700)
+        self.rect.x = random.randint(1,self.settings.WIDTH - 100)
 
         self.tipo = tipo
 
@@ -26,5 +29,5 @@ class Improvement(pygame.sprite.Sprite):
         self.rect.y += self.speed
 
         # Após passar do limite da tela é destruído
-        if self.rect.bottom > 600:
+        if self.rect.bottom > self.settings.HEIGHT:
             self.kill()

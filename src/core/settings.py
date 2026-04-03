@@ -1,7 +1,7 @@
 # src/core/settings.py
 class Settings:
-    WIDTH = 800
-    HEIGHT = 600
+    WIDTH = 1000
+    HEIGHT = 800
     TITLE = "ShotSpace"
     FPS = 60
 

@@ -172,12 +172,11 @@ class Game:
             self.update()
             self.draw()
 
-            # Delay de Game Over (para dar tempo de ver a explosão)
+            # Delay de Game Over
             if self.remainingLifes <= 0:
                 if pygame.time.get_ticks() - self.game_over_delay > 3000:  # 3 segundos
                     self.running = False
                     print("Game Over!")
 
         # Finaliza o Pygame
-        time.sleep(0.5)  # pequena pausa antes de fechar
         pygame.quit()

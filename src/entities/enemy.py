@@ -1,9 +1,12 @@
 import pygame
 import random
+from ..core.settings import Settings
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, imagePath,*groups):
         super().__init__(*groups)
+
+        self.settings = Settings()
 
         # Tamanho aleatório para o asteroide
         size = random.randint(40,120)
@@ -17,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # Surgimento aleatório no mapa
         self.rect.y = random.randint(-400,-1)
-        self.rect.x = random.randint(1,700)
+        self.rect.x = random.randint(1,self.settings.WIDTH - size)
 
         # Velociade aleatória para cada asteroide / inimigo
         self.speed = 1 + random.random() * 2
@@ -27,5 +30,5 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += self.speed
 
         # Após passar do limite da tela é destruído
-        if self.rect.bottom > 600:
+        if self.rect.bottom > self.settings.HEIGHT:
             self.kill()

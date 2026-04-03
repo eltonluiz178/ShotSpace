@@ -1,8 +1,11 @@
 import pygame
+from ..core.settings import Settings
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups, imagePath, numberPlayer):
         super().__init__(groups)
+
+        self.settings = Settings()
 
         # Carrega imagem e dimensões do jogador
         self.image = pygame.image.load(imagePath)
@@ -63,15 +66,15 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
             self.xspeed = 0
             self.yspeed = 0
-        if self.rect.bottom > 600:
-            self.rect.bottom = 600
+        if self.rect.bottom > self.settings.HEIGHT:
+            self.rect.bottom = self.settings.HEIGHT
             self.xspeed = 0
             self.yspeed = 0
         if self.rect.left < 0:
             self.rect.left = 0
             self.xspeed = 0
             self.yspeed = 0
-        if self.rect.right > 800:
-            self.rect.right = 800
+        if self.rect.right > self.settings.WIDTH:
+            self.rect.right = self.settings.WIDTH
             self.xspeed = 0
             self.yspeed = 0
