@@ -1,6 +1,4 @@
-# src/core/window.py
 import pygame
-
 
 class Window:
     def __init__(self, settings):
@@ -19,4 +17,4 @@ class Window:
         return self.screen
 
     def update(self):
-        pygame.display.update()  # ou .flip()
+        pygame.display.update()

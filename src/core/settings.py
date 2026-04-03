@@ -8,6 +8,3 @@ class Settings:
     # Cores
     BLACK = (0, 0, 0)
 
-    # Outras configurações
-    PLAYER_SPEED = 5
-    # ...
