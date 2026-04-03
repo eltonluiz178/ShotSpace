@@ -1,5 +1,7 @@
 import pygame
 
+from utils.path_helper import resource_path
+
 class Window:
     def __init__(self, settings):
         self.settings = settings
@@ -8,7 +10,8 @@ class Window:
 
         # Ícone
         try:
-            icon = pygame.image.load("assets/images/gameIcon.png")
+            icon_path = resource_path('assets/images/gameIcon.png')
+            icon = pygame.image.load(icon_path)
             pygame.display.set_icon(icon)
         except:
             pass  # ícone não encontrado, continua sem ele

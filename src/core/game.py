@@ -2,16 +2,17 @@ import pygame
 import random
 import time
 
-from .settings import Settings
-from .window import Window
+from core.settings import Settings
+from core.window import Window
 
 # Imports das entidades e componentes
-from src.entities.player import Player
-from src.entities.enemy import Enemy
-from src.entities.shot import Shot
-from src.entities.improvement import Improvement
-from src.managers.sound_manager import Sound
-from src.components.textSprite import TextSprite
+from entities.player import Player
+from entities.enemy import Enemy
+from entities.shot import Shot
+from entities.improvement import Improvement
+from managers.sound_manager import Sound
+from components.textSprite import TextSprite
+from utils.path_helper import resource_path
 
 
 class Game:
@@ -39,7 +40,8 @@ class Game:
         # ====================== BACKGROUND ======================
         self.bg = pygame.sprite.Sprite(self.objectGroup)
         try:
-            self.bg.image = pygame.image.load("assets/images/bgSpace.png")
+            bg_path = resource_path('assets/images/bgSpace.png')
+            self.bg.image = pygame.image.load(bg_path)
             self.bg.image = pygame.transform.scale(self.bg.image,
                                                    (self.settings.WIDTH, self.settings.HEIGHT))
             self.bg.rect = self.bg.image.get_rect()
@@ -47,7 +49,8 @@ class Game:
             print("Background 'bgSpace.png' não encontrado!")
 
         # ====================== PLAYER ======================
-        self.player = Player(self.objectGroup, "assets/images/Rocket.png", 1)
+        player_path = resource_path('assets/images/Rocket.png')
+        self.player = Player(player_path, 1, self.objectGroup)
 
         # ====================== SOM ======================
         self.sounds = Sound()
@@ -55,7 +58,8 @@ class Game:
         # ====================== HUD - VIDAS ======================
         try:
             self.lifes_sprite = pygame.sprite.Sprite(self.objectGroup)
-            self.lifes_sprite.image = pygame.image.load("assets/images/life.png")
+            lifes_path = resource_path('assets/images/life.png')
+            self.lifes_sprite.image = pygame.image.load(lifes_path)
             self.lifes_sprite.image = pygame.transform.scale(self.lifes_sprite.image, (50, 50))
             self.lifes_sprite.rect = pygame.Rect(10, 10, 50, 50)
         except FileNotFoundError:
@@ -84,9 +88,11 @@ class Game:
     def spawnImprovement(self, probability, enemyRect):
         if random.random() < probability:
             if random.random() < 0.5:
-                newImprovement = Improvement("assets/images/moreShot.png", 'shot', enemyRect,self.objectGroup, self.improvementGroup)
+                moreShot_path = resource_path('assets/images/moreShot.png')
+                newImprovement = Improvement(moreShot_path, 'shot', enemyRect,self.objectGroup, self.improvementGroup)
             else:
-                newImprovement = Improvement("assets/images/moreLife.png", 'life', enemyRect,self.objectGroup, self.improvementGroup)
+                moreLife_path = resource_path('assets/images/moreLife.png')
+                newImprovement = Improvement(moreLife_path, 'life', enemyRect,self.objectGroup, self.improvementGroup)
 
     def update(self):
         """Atualiza toda a lógica do jogo"""
@@ -111,7 +117,8 @@ class Game:
                 self.numberShots = max(1, min(self.numberShots, 5))
 
                 for i in range(self.numberShots):
-                    shot = Shot("assets/images/Shot.png", self.objectGroup, self.shotGroup)
+                    shot_path = resource_path('assets/images/shot.png')
+                    shot = Shot(shot_path, self.objectGroup, self.shotGroup)
                     dx = (i - (self.numberShots - 1) / 2) * offset
                     shot.rect.center = (center_x + dx, center_y)
 
@@ -122,7 +129,8 @@ class Game:
 
             # Spawn de asteroides/inimigos
             if random.random() < 0.25:  # 25% de chance a cada 30 frames
-                Enemy("assets/images/Asteroid.png", self.objectGroup, self.enemyGroup)
+                asteroid_path = resource_path('assets/images/Asteroid.png')
+                Enemy(asteroid_path, self.objectGroup, self.enemyGroup)
 
             self.spawnImprovement(0.005, None)
 

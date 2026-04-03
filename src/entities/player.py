@@ -1,8 +1,8 @@
 import pygame
-from ..core.settings import Settings
+from core.settings import Settings
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, groups, imagePath, numberPlayer):
+    def __init__(self, imagePath, numberPlayer, *groups):
         super().__init__(groups)
 
         self.settings = Settings()

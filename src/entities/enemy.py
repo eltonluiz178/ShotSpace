@@ -1,6 +1,6 @@
 import pygame
 import random
-from ..core.settings import Settings
+from core.settings import Settings
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, imagePath,*groups):
