@@ -36,6 +36,8 @@ class Game:
         self.timer = 0
         self.last_shot = 0
         self.cooldown_shot = 700  # 0,7 segundos em ms
+        self.last_check = 0
+        self.cooldown_spawn = 1000 # 1 segundo em ms
 
         # ====================== BACKGROUND ======================
         self.bg = pygame.sprite.Sprite(self.objectGroup)
@@ -101,11 +103,11 @@ class Game:
 
         # ==================== TIRO DO JOGADOR ====================
         if keys[pygame.K_SPACE]:
-            agora = pygame.time.get_ticks()
+            now = pygame.time.get_ticks()
 
             # verifica se já passou o tempo de cooldown do tiro
-            if agora - self.last_shot >= self.cooldown_shot:
-                self.last_shot = agora  # atualiza o tempo do último tiro
+            if now - self.last_shot >= self.cooldown_shot:
+                self.last_shot = now  # atualiza o tempo do último tiro
 
                 self.sounds.play('shot')
 
@@ -123,18 +125,21 @@ class Game:
                     shot.rect.center = (center_x + dx, center_y)
 
         # ==================== SPAWN DE INIMIGOS ====================
-        self.timer += 1
-        if self.timer > 30:
-            self.timer = 0
+        now = pygame.time.get_ticks()
+        if now - self.last_check >= self.cooldown_spawn:
+            self.last_check = now
 
             # Spawn de asteroides/inimigos
-            if random.random() < 0.25:  # 25% de chance a cada 30 frames
+            if random.random() < 0.5:  # 50% de chance a cada segundo
                 asteroid_path = resource_path('assets/images/Asteroid.png')
                 Enemy(asteroid_path, self.objectGroup, self.enemyGroup)
 
-            self.spawnImprovement(0.005, None)
+        # ==================== SPAWN DE APRIMORAMENTOS ====================
+
+            self.spawnImprovement(0.01, None) # 1% de chance a cada segundo
 
         # ==================== ATUALIZA TODOS OS SPRITES ====================
+
         self.objectGroup.update()
 
         # ==================== COLISÕES ====================
