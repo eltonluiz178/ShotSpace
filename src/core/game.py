@@ -31,6 +31,7 @@ class Game:
         self.shotGroup = pygame.sprite.Group()
 
         # ====================== VARIÁVEIS DO JOGO ======================
+        self.scoreTotal = 0
         self.remainingLifes = 1
         self.numberShots = 1
         self.timer = 0
@@ -74,6 +75,16 @@ class Game:
             40,
             (35, 176, 76),
             pygame.Rect(65, 15, 50, 50),
+            self.objectGroup
+        )
+
+        # Score do Game
+
+        self.scoreGame = TextSprite(
+            f"Score: {self.scoreTotal}",
+            40,
+            (255,255,255),
+            pygame.Rect(10,self.settings.HEIGHT - 40,40,40),
             self.objectGroup
         )
 
@@ -171,6 +182,8 @@ class Game:
         # Colisão Tiro × Inimigo
         shotCollisions = pygame.sprite.groupcollide(self.shotGroup, self.enemyGroup, True, True,pygame.sprite.collide_mask)
         for col in shotCollisions:
+            self.scoreTotal += 10
+            self.scoreGame.update_text(f"Score: {self.scoreTotal}")
             enemyRect = col.rect
             self.spawnImprovement(0.01, enemyRect)
 
