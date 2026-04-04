@@ -27,6 +27,11 @@ class Sound():
         self.up = pygame.mixer.Sound(up_path)
         self.up.set_volume(0.4)
 
+        # Som de Hit
+        hit_path = resource_path('assets/sounds/Hit.wav')
+        self.hit = pygame.mixer.Sound(hit_path)
+        self.hit.set_volume(0.4)
+
     def play(self,name):
         if ( name == 'fah'):
             self.fah.play()
@@ -34,3 +39,5 @@ class Sound():
             self.shot.play()
         elif ( name == 'up'):
             self.up.play()
+        elif ( name == 'hit'):
+            self.hit.play()
