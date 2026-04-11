@@ -2,7 +2,7 @@ import pygame
 import random
 from core.settings import Settings
 
-class Enemy(pygame.sprite.Sprite):
+class Asteroid(pygame.sprite.Sprite):
     def __init__(self, imagePath,*groups):
         super().__init__(*groups)
 
