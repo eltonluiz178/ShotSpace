@@ -7,12 +7,13 @@ from core.window import Window
 
 # Imports das entidades e componentes
 from entities.player import Player
-from entities.enemy import Enemy
+from entities.asteroid import Asteroid
 from entities.shot import Shot
 from entities.improvement import Improvement
 from managers.sound_manager import Sound
 from components.textSprite import TextSprite
 from utils.path_helper import resource_path
+from entities.enemyShip import EnemyShip
 
 
 class Game:
@@ -49,10 +50,10 @@ class Game:
                                                    (self.settings.WIDTH, self.settings.HEIGHT))
             self.bg.rect = self.bg.image.get_rect()
         except FileNotFoundError:
-            print("Background 'bgSpace.png' não encontrado!")
+            print("Imagem do Background não encontrado!")
 
         # ====================== PLAYER ======================
-        player_path = resource_path('assets/images/Rocket.png')
+        player_path = resource_path('assets/images/rocket.png')
         self.player = Player(player_path, 1, self.objectGroup)
 
         # ====================== SOM ======================
@@ -98,14 +99,14 @@ class Game:
                 self.running = False
 
     # Spawn de aprimoramentosd
-    def spawnImprovement(self, probability, enemyRect):
+    def spawnImprovement(self, probability, asteroidRect):
         if random.random() < probability:
             if random.random() < 0.5:
                 moreShot_path = resource_path('assets/images/moreShot.png')
-                newImprovement = Improvement(moreShot_path, 'shot', enemyRect,self.objectGroup, self.improvementGroup)
+                newImprovement = Improvement(moreShot_path, 'shot', asteroidRect,self.objectGroup, self.improvementGroup)
             else:
                 moreLife_path = resource_path('assets/images/moreLife.png')
-                newImprovement = Improvement(moreLife_path, 'life', enemyRect,self.objectGroup, self.improvementGroup)
+                newImprovement = Improvement(moreLife_path, 'life', asteroidRect,self.objectGroup, self.improvementGroup)
 
     def update(self):
         """Atualiza toda a lógica do jogo"""
@@ -140,10 +141,15 @@ class Game:
         if now - self.last_check >= self.cooldown_spawn:
             self.last_check = now
 
-            # Spawn de asteroides/inimigos
+            # Spawn de asteroides
             if random.random() < 0.5:  # 50% de chance a cada segundo
-                asteroid_path = resource_path('assets/images/Asteroid.png')
-                Enemy(asteroid_path, self.objectGroup, self.enemyGroup)
+                asteroid_path = resource_path('assets/images/asteroid.png')
+                Asteroid(asteroid_path, self.objectGroup, self.enemyGroup)
+
+            # Spawn de naves
+            if random.random() < 0.05: # 10% de chance a cada segundo
+                ship_path = resource_path('assets/images/shipEnemy.png')
+                EnemyShip(ship_path, self.objectGroup, self.enemyGroup)
 
         # ==================== SPAWN DE APRIMORAMENTOS ====================
 
@@ -155,10 +161,10 @@ class Game:
 
         # ==================== COLISÕES ====================
 
-        # Colisão Player × Inimigo
-        enemyCollisions = pygame.sprite.spritecollide(self.player, self.enemyGroup, True,
-                                                      pygame.sprite.collide_mask)
-        if enemyCollisions:
+        # Colisão Player × Asteroid
+        asteroidCollisions = pygame.sprite.spritecollide(self.player, self.enemyGroup, True,
+                                                         pygame.sprite.collide_mask)
+        if asteroidCollisions:
             if self.remainingLifes <= 1:
                 self.sounds.play('fah')
                 self.game_over_delay = pygame.time.get_ticks()  # inicia delay de game over
@@ -168,7 +174,7 @@ class Game:
                 self.quantityLifes.update_text(f": {self.remainingLifes}")
                 self.sounds.play('hit')  # se tiver som de hit
 
-        # Colisão Player × Melhoria
+        # Colisão Player × Aprimoramento
         improvementCollisions = pygame.sprite.spritecollide(self.player, self.improvementGroup, True)
         for imp in improvementCollisions:
             if imp.tipo == 'life':
@@ -180,12 +186,12 @@ class Game:
                 self.sounds.play('up')
 
         # Colisão Tiro × Inimigo
-        shotCollisions = pygame.sprite.groupcollide(self.shotGroup, self.enemyGroup, True, True,pygame.sprite.collide_mask)
+        shotCollisions = pygame.sprite.groupcollide(self.shotGroup, self.enemyGroup, True, True, pygame.sprite.collide_mask)
         for col in shotCollisions:
             self.scoreTotal += 10
             self.scoreGame.update_text(f"Score: {self.scoreTotal}")
-            enemyRect = col.rect
-            self.spawnImprovement(0.01, enemyRect)
+            asteroidRect = col.rect
+            self.spawnImprovement(0.01, asteroidRect)
 
     def draw(self):
         """Desenha tudo na tela"""
