@@ -9,11 +9,11 @@ class Player(pygame.sprite.Sprite):
 
         # Carrega imagem e dimensões do jogador
         self.image = pygame.image.load(imagePath)
-        self.image = pygame.transform.scale(self.image, [60, 60])
+        self.image = pygame.transform.scale(self.image, [100, 150])
 
         # Recebe posição inicial
 
-        self.rect = pygame.Rect(400,450,60,60);
+        self.rect = pygame.Rect(400,450,100,150);
 
         self.numberPlayer = numberPlayer
 
